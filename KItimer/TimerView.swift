@@ -11,7 +11,9 @@ struct TimerView: View {
     @State private var isRunning = false
     @State private var timeRemaining: TimeInterval
     @State private var showResetButton = false
+    @State private var backgroundEntryTime: Date?
     @State private var timer: Timer? = nil
+
     let totalTime: TimeInterval
     let notificationTitle: String
     let notificationBody: String
@@ -24,14 +26,14 @@ struct TimerView: View {
         self.displayFormat = displayFormat
         _timeRemaining = State(initialValue: totalTime)
     }
-    
+
     var body: some View {
         VStack {
             Text(formatTime(timeRemaining))
                 .font(.largeTitle)
                 .monospacedDigit()
                 .padding()
-            
+
             HStack {
                 Button(action: startTimer) {
                     Text("Start")
@@ -42,7 +44,7 @@ struct TimerView: View {
                         .cornerRadius(8)
                 }
                 .disabled(isRunning)
-                
+
                 if showResetButton {
                     Button(action: resetTimer) {
                         Text("Reset")
@@ -55,17 +57,25 @@ struct TimerView: View {
                 }
             }
         }
+        .onAppear {
+            NotificationManager.shared.requestAuthorization()
+            addObservers()
+        }
+        .onDisappear {
+            removeObservers()
+        }
     }
-    
+
     private func startTimer() {
         isRunning = true
         showResetButton = true
+        backgroundEntryTime = nil
         NotificationManager.shared.scheduleNotification(
             title: notificationTitle,
             body: notificationBody,
-            timeInterval: totalTime
+            timeInterval: timeRemaining
         )
-        
+
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
             if self.timeRemaining > 0 {
                 self.timeRemaining -= 1
@@ -75,25 +85,57 @@ struct TimerView: View {
             }
         }
     }
-    
+
     private func resetTimer() {
         isRunning = false
         showResetButton = false
         timeRemaining = totalTime
         timer?.invalidate()
         timer = nil
+        NotificationManager.shared.cancelNotification()
     }
-    
+
     private func formatTime(_ time: TimeInterval) -> String {
         let seconds = Int(time) % 60
         let minutes = (Int(time) / 60) % 60
         let hours = Int(time) / 3600
-        
+
         if displayFormat == "mm:ss" {
             return String(format: "%02d:%02d", minutes, seconds)
         } else {
             return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
         }
     }
-}
 
+    // MARK: - Observers
+    private func addObservers() {
+        NotificationCenter.default.addObserver(
+            forName: UIApplication.didEnterBackgroundNotification,
+            object: nil,
+            queue: .main
+        ) { _ in
+            if self.isRunning {
+                self.backgroundEntryTime = Date()
+                self.timer?.invalidate()
+            }
+        }
+
+        NotificationCenter.default.addObserver(
+            forName: UIApplication.willEnterForegroundNotification,
+            object: nil,
+            queue: .main
+        ) { _ in
+            if self.isRunning, let entryTime = self.backgroundEntryTime {
+                let elapsedTime = Date().timeIntervalSince(entryTime)
+                self.timeRemaining -= elapsedTime
+                self.backgroundEntryTime = nil
+                self.startTimer()
+            }
+        }
+    }
+
+    private func removeObservers() {
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
+    }
+}

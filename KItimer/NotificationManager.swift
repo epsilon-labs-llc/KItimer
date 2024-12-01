@@ -5,16 +5,17 @@
 //  Created by Tomoya on 11/30/24.
 //
 
-import Foundation
 import UserNotifications
 
 class NotificationManager {
     static let shared = NotificationManager()
     
+    private init() {}
+    
     func requestAuthorization() {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { granted, error in
             if let error = error {
-                print("Error requesting authorization: \(error)")
+                print("Error requesting notification authorization: \(error)")
             }
         }
     }
@@ -26,12 +27,16 @@ class NotificationManager {
         content.sound = .default
         
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
-        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+        let request = UNNotificationRequest(identifier: "KItimerNotification", content: content, trigger: trigger)
         
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
                 print("Error scheduling notification: \(error)")
             }
         }
+    }
+    
+    func cancelNotification() {
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["KItimerNotification"])
     }
 }
