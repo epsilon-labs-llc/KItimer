@@ -1,6 +1,6 @@
 # KItimer
 
-KItimer is a countdown timer app designed specifically for **Kings Island** visitors in Ohio. The app helps users track the availability of their **Drink Pass** (15-minute cooldown) and **Dining Pass** (4-hour cooldown) with easy-to-use timers and notifications. Even when the app is in the background, KItimer ensures accurate countdowns and timely reminders.
+KItimer is a countdown timer app designed for **Kings Island** Pass Holders in Ohio. The app helps users track the availability of their **Drink Pass** (15-minute cooldown) and **Dining Pass** (4-hour cooldown) with easy-to-use timers and notifications. Even when the app is in the background, KItimer ensures accurate countdowns and timely reminders.
 
 ---
 
