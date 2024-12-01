@@ -97,7 +97,7 @@ We welcome contributions to improve KItimer! If you'd like to contribute:
 5. Submit a pull request!
 
 ## License
-This project is licensed under the MIT License. See the `LICENSE` file for more details.
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) for more details.
 
 **Enjoy your day at Kings Island with KItimer!** 🎉
 
