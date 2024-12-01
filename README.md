@@ -72,12 +72,12 @@ This app is tailored for use at **Kings Island**, a popular amusement park in Oh
 ### Home Screen
 Displays the timers for Drink Pass and Dining Pass with Start and Reset buttons.
 
-![Home Screen](./screenshots/home_screen.png)
+<img src="./screenshots/home_screen.png" width="300px">
 
 ### Notification
 Displays a reminder when the Drink Pass or Dining Pass is available again.
 
-![Notification](./screenshots/notification.png)
+<img src="./screenshots/notification.png" width="300px">
 
 ## Contributing
 We welcome contributions to improve KItimer! If you'd like to contribute:
