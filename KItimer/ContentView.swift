@@ -17,6 +17,7 @@ struct ContentView: View {
                     .font(.title)
                 TimerView(
                     totalTime: 15 * 60,
+                    notificationID: "DrinkPassNotification_\(UUID().uuidString)",
                     notificationTitle: "Your Drink Pass Available!",
                     notificationBody: "It's time to enjoy your next drink!",
                     displayFormat: "mm:ss"
@@ -26,6 +27,7 @@ struct ContentView: View {
                     .font(.title)
                 TimerView(
                     totalTime: 4 * 60 * 60,
+                    notificationID: "DiningPassNotification_\(UUID().uuidString)",
                     notificationTitle: "Your Dining Pass Available!",
                     notificationBody: "Your dining pass is ready!",
                     displayFormat: "hh:mm:ss"
@@ -38,7 +40,7 @@ struct ContentView: View {
         .background(Color(red: 0.93, green: 0.98, blue: 0.99))
         .edgesIgnoringSafeArea(.all)
         .onAppear {
-            NotificationManager.shared.requestAuthorization()
+            NotificationManager.shared.requestNotificationPermission()
         }
     }
     

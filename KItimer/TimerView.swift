@@ -18,9 +18,11 @@ struct TimerView: View {
     let notificationTitle: String
     let notificationBody: String
     let displayFormat: String
+    let notificationID: String
     
-    init(totalTime: TimeInterval, notificationTitle: String, notificationBody: String, displayFormat: String) {
+    init(totalTime: TimeInterval, notificationID: String, notificationTitle: String, notificationBody: String, displayFormat: String) {
         self.totalTime = totalTime
+        self.notificationID = notificationID
         self.notificationTitle = notificationTitle
         self.notificationBody = notificationBody
         self.displayFormat = displayFormat
@@ -58,7 +60,7 @@ struct TimerView: View {
             }
         }
         .onAppear {
-            NotificationManager.shared.requestAuthorization()
+            NotificationManager.shared.requestNotificationPermission()
             addObservers()
         }
         .onDisappear {
@@ -71,6 +73,7 @@ struct TimerView: View {
         showResetButton = true
         backgroundEntryTime = nil
         NotificationManager.shared.scheduleNotification(
+            identifier: notificationID,
             title: notificationTitle,
             body: notificationBody,
             timeInterval: timeRemaining
@@ -92,7 +95,9 @@ struct TimerView: View {
         timeRemaining = totalTime
         timer?.invalidate()
         timer = nil
-        NotificationManager.shared.cancelNotification()
+        NotificationManager.shared.cancelNotification(
+            identifier: notificationID
+        )
     }
 
     private func formatTime(_ time: TimeInterval) -> String {
